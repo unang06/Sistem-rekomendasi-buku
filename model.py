@@ -75,3 +75,8 @@ def create_recommender(df):
     tfidf_matrix = tfidf.fit_transform(df['features'])
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     return cosine_sim
+
+print(f"[DEBUG] Status: {response.status_code}")
+print(f"[DEBUG] Full URL: {response.url}")
+print(f"[DEBUG] Response JSON: {data}")
+
