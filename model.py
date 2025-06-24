@@ -32,23 +32,21 @@ API_KEY = "AIzaSyCWtre-ogfgAL55nyLnNCnLmeo4cGUH7O8"
 BASE_URL = "https://www.googleapis.com/books/v1/volumes"
 
 def search_books(query, max_results=40):
+    print(f"[DEBUG] >>> search_books DIPANGGIL dengan query: {query}")
     params = {
         'q': query,
         'key': API_KEY,
         'maxResults': max_results
     }
     try:
-        response = requests.get(BASE_URL, params=params)  # harus di sini
+        response = requests.get(BASE_URL, params=params)
         response.raise_for_status()
 
-        # ✨ Debug print di bawah ini harus berada **setelah** response berhasil
-        print(f"[DEBUG] QUERY: {query}")
         print(f"[DEBUG] STATUS: {response.status_code}")
         print(f"[DEBUG] URL: {response.url}")
 
         data = response.json()
-        print(f"[DEBUG] JSON KEYS: {list(data.keys())}")
-        print(f"[DEBUG] TOTAL_ITEMS: {data.get('totalItems')}")
+        print(f"[DEBUG] TOTAL_ITEMS: {data.get('totalItems', 0)}")
 
         books = []
         for item in data.get('items', []):
@@ -67,7 +65,7 @@ def search_books(query, max_results=40):
         return pd.DataFrame(books)
 
     except Exception as e:
-        print(f"❌ Exception in search_books: {e}")
+        print(f"[ERROR] Gagal fetch dari API: {e}")
         return pd.DataFrame()
 
 def create_recommender(df):
