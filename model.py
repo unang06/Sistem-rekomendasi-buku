@@ -8,7 +8,7 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from nltk.corpus import stopwords
 
 # --- SETUP NLTK (AMAN UNTUK STREAMLIT CLOUD) ---
-nltk.data.path.append("/tmp")  # path aman untuk cloud
+nltk.data.path.append("/tmp")
 
 try:
     stop_words = set(stopwords.words('indonesian'))
@@ -16,20 +16,18 @@ except LookupError:
     nltk.download('stopwords', download_dir="/tmp")
     stop_words = set(stopwords.words('indonesian'))
 
-# --- STEMMING SETUP ---
 factory = StemmerFactory()
 stemmer = factory.create_stemmer()
 
-# --- FUNGSI PREPROCESSING TEKS ---
 def preprocess_text(text):
     text = text.lower()
-    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Hapus angka dan simbol
+    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Hapus simbol & angka
     tokens = text.split()
     tokens = [word for word in tokens if word not in stop_words]
     stemmed = [stemmer.stem(word) for word in tokens]
     return ' '.join(stemmed)
 
-# --- KONFIGURASI API GOOGLE BOOKS ---
+# --- GOOGLE BOOKS API CONFIG ---
 API_KEY = "AIzaSyCWtre-ogfgAL55nyLnNCnLmeo4cGUH7O8"
 BASE_URL = "https://www.googleapis.com/books/v1/volumes"
 
@@ -38,7 +36,7 @@ def search_books(query, max_results=40):
         'q': query,
         'key': API_KEY,
         'maxResults': max_results,
-        'langRestrict': 'id'
+        # 'langRestrict': 'id'  # HAPUS agar hasil pencarian lebih luas
     }
     try:
         response = requests.get(BASE_URL, params=params)
@@ -59,19 +57,19 @@ def search_books(query, max_results=40):
                 'thumbnail': volume_info.get('imageLinks', {}).get('thumbnail', '')
             }
             books.append(book)
+
+        print(f"✅ {len(books)} buku ditemukan untuk query '{query}'")  # Debug log
         return pd.DataFrame(books)
     except Exception as e:
-        print(f"❌ Error saat mengambil data dari API: {str(e)}")
+        print(f"❌ Error saat memanggil API: {str(e)}")
         return pd.DataFrame()
 
-# --- FUNGSI MEMBUAT MATRKS KEMIRIPAN COSINE ---
 def create_recommender(df):
     if df.empty:
         return None
 
-    # Gabungkan genre + deskripsi untuk dijadikan fitur
-    df['features'] = df['genres'] + ' ' + df['description']
-    df['features'] = df['features'].fillna('').apply(preprocess_text)
+    df['features'] = df['genres'].fillna('') + ' ' + df['description'].fillna('')
+    df['features'] = df['features'].apply(preprocess_text)
 
     tfidf = TfidfVectorizer()
     tfidf_matrix = tfidf.fit_transform(df['features'])
