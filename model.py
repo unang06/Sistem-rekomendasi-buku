@@ -38,15 +38,17 @@ def search_books(query, max_results=40):
         'maxResults': max_results
     }
     try:
-        response = requests.get(BASE_URL, params=params)
+        response = requests.get(BASE_URL, params=params)  # harus di sini
         response.raise_for_status()
 
-        # Debug log setelah response berhasil
-        print(f"[DEBUG] Status: {response.status_code}")
-        print(f"[DEBUG] Full URL: {response.url}")
+        # ✨ Debug print di bawah ini harus berada **setelah** response berhasil
+        print(f"[DEBUG] QUERY: {query}")
+        print(f"[DEBUG] STATUS: {response.status_code}")
+        print(f"[DEBUG] URL: {response.url}")
+
         data = response.json()
-        print(f"[DEBUG] JSON keys: {list(data.keys())}")
-        print(f"[DEBUG] Total items: {data.get('totalItems', 0)}")
+        print(f"[DEBUG] JSON KEYS: {list(data.keys())}")
+        print(f"[DEBUG] TOTAL_ITEMS: {data.get('totalItems')}")
 
         books = []
         for item in data.get('items', []):
@@ -62,10 +64,10 @@ def search_books(query, max_results=40):
                 'thumbnail': volume_info.get('imageLinks', {}).get('thumbnail', '')
             }
             books.append(book)
-
         return pd.DataFrame(books)
+
     except Exception as e:
-        print(f"❌ Exception in search_books: {str(e)}")
+        print(f"❌ Exception in search_books: {e}")
         return pd.DataFrame()
 
 def create_recommender(df):
