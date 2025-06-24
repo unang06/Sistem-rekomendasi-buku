@@ -1,3 +1,36 @@
+import requests
+import pandas as pd
+import re
+import nltk
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from nltk.corpus import stopwords
+
+# --- SETUP NLTK (AMAN UNTUK STREAMLIT CLOUD) ---
+nltk.data.path.append("/tmp")
+
+try:
+    stop_words = set(stopwords.words('indonesian'))
+except LookupError:
+    nltk.download('stopwords', download_dir="/tmp")
+    stop_words = set(stopwords.words('indonesian'))
+
+factory = StemmerFactory()
+stemmer = factory.create_stemmer()
+
+def preprocess_text(text):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Hapus simbol & angka
+    tokens = text.split()
+    tokens = [word for word in tokens if word not in stop_words]
+    stemmed = [stemmer.stem(word) for word in tokens]
+    return ' '.join(stemmed)
+
+# --- GOOGLE BOOKS API CONFIG ---
+API_KEY = "AIzaSyCWtre-ogfgAL55nyLnNCnLmeo4cGUH7O8"
+BASE_URL = "https://www.googleapis.com/books/v1/volumes"
+
 def search_books(query, max_results=40):
     params = {
         'q': query,
@@ -34,3 +67,15 @@ def search_books(query, max_results=40):
     except Exception as e:
         print(f"❌ Exception in search_books: {str(e)}")
         return pd.DataFrame()
+
+def create_recommender(df):
+    if df.empty:
+        return None
+
+    df['features'] = df['genres'].fillna('') + ' ' + df['description'].fillna('')
+    df['features'] = df['features'].apply(preprocess_text)
+
+    tfidf = TfidfVectorizer()
+    tfidf_matrix = tfidf.fit_transform(df['features'])
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+    return cosine_sim
