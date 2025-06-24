@@ -35,13 +35,14 @@ def search_books(query, max_results=40):
     params = {
         'q': query,
         'key': API_KEY,
-        'maxResults': max_results,
-        # 'langRestrict': 'id'  # HAPUS agar hasil pencarian lebih luas
+        'maxResults': max_results
     }
     try:
         response = requests.get(BASE_URL, params=params)
-        response.raise_for_status()
+        print(f"[DEBUG] Status: {response.status_code}")
+        print(f"[DEBUG] Full URL: {response.url}")
         data = response.json()
+        print(f"[DEBUG] Response JSON: {data}")
 
         books = []
         for item in data.get('items', []):
@@ -58,10 +59,9 @@ def search_books(query, max_results=40):
             }
             books.append(book)
 
-        print(f"✅ {len(books)} buku ditemukan untuk query '{query}'")  # Debug log
         return pd.DataFrame(books)
     except Exception as e:
-        print(f"❌ Error saat memanggil API: {str(e)}")
+        print(f"❌ Exception: {str(e)}")
         return pd.DataFrame()
 
 def create_recommender(df):
