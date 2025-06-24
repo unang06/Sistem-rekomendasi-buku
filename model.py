@@ -39,14 +39,13 @@ def search_books(query, max_results=40):
         'maxResults': max_results
     }
     try:
-        response = requests.get(BASE_URL, params=params)
-        response.raise_for_status()
-
+        print(f"[DEBUG] QUERY: {query}")
         print(f"[DEBUG] STATUS: {response.status_code}")
         print(f"[DEBUG] URL: {response.url}")
 
         data = response.json()
         print(f"[DEBUG] TOTAL_ITEMS: {data.get('totalItems', 0)}")
+
 
         books = []
         for item in data.get('items', []):
