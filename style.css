@@ -1,0 +1,72 @@
+/* Judul Besar */
+.title {
+    font-size: 42px;
+    color: #6C3483;
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Kotak Buku */
+.book-box {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 25px;
+    transition: transform 0.2s;
+}
+
+.book-box:hover {
+    transform: scale(1.02);
+}
+
+/* Tombol utama */
+.stButton>button {
+    background-color: #6C3483;
+    color: white;
+    border-radius: 12px;
+    padding: 0.6em 2em;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.stButton>button:hover {
+    background-color: #884EA0;
+    transform: scale(1.05);
+}
+
+/* Input text */
+.stTextInput>div>div>input {
+    border: 2px solid #6C3483;
+    border-radius: 10px;
+    padding: 0.7em;
+}
+
+/* Selectbox */
+.stSelectbox>div>div>div {
+    border: 2px solid #6C3483;
+    border-radius: 10px;
+    padding: 0.5em;
+}
+
+/* Spinner */
+.stSpinner > div > div {
+    color: #6C3483;
+}
+
+/* Subheader */
+h2 {
+    color: #6C3483;
+    font-weight: 700;
+}
+
+/* Expander */
+.streamlit-expanderHeader {
+    font-size: 18px;
+    font-weight: bold;
+    color: #6C3483;
+}
+
