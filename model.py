@@ -28,7 +28,7 @@ def preprocess_text(text):
     return ' '.join(stemmed)
 
 # --- GOOGLE BOOKS API CONFIG ---
-API_KEY = "AIzaSyCWtre-ogfgAL55nyLnNCnLmeo4cGUH7O8"
+API_KEY = "AIzaSyDWFrKUoZCgied1U1spIxjNkkyUeLer7mA"
 BASE_URL = "https://www.googleapis.com/books/v1/volumes"
 
 def search_books(query, max_results=40):
